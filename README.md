@@ -26,22 +26,26 @@ The objective is to identify differentially expressed genes (DEGs) associated wi
 
 This project demonstrated the analysis using the **female dataset**, while the same workflow can be applied to the male samples for comparative analysis.
 
-## Workflow (gambar)
+## Workflow
 <p align="center">
   <img src="images/workflow.png" width="700">
 </p>
 
-## Analysis Pipeline
+## Pipeline Analysis 
 ### 1. Data Preparation
 The raw count matrix was downloaded from GEO supplementary files. Steps included:
 - Download GEO dataset
+   ```r
+  library(GEOquery)
+  gse <- getGEO("GSE294660", GSEMatrix = TRUE)
+  ```
 - Import raw count matrix
 - Extract female/male samples
 - Create sample metadata
 - Check sample distribution
 - Filter low-count genes
 
-### 2. Quality Assessment
+### 2. Quality Control
 Quality assesment was performed before differential expression analysis. Visualization include:
 - Boxplot
 - Sample correlation heatmap
@@ -178,196 +182,8 @@ These findings suggest that HFD induces transcriptional changes potentially cont
 
 ### 01 DATA PREPARATION 
 
-#### Instalasi Package
-- **Install BiocManager (Pengelola Packages Bioconductor)**
-  ```r
-  install.packages("BiocManager")
-  ```
-- **Install semua packages untuk RNA-seq**
-  ```r
-  BiocManager::install(c("DESeq2", "ggplot2", "pheatmap", "GEOquery", "dplyr", "tidyr"))
-  ```
-- **Load library setiap kali mau pakai**
-  ```r
-  library(DESeq2)
-  library(ggplot2)
-  library(pheatmap)
-  library(GEOquery)
-  library(dplyr)
-  library(tidyr)
-  ```
 
-#### Data Preparation
-#####  a. Download Data
-- **Load packages**
-  ```r
-  library(GEOquery)
-  ```
-- **download series_matrix GSE**
-  ```r
-  gse <- getGEO("GSE294660", GSEMatrix = TRUE)
-  ```
-- **download semua file supplementary dari GSE**
-  ```r
-  getGEOSuppFiles("GSE294660")
-  ```
 
-##### b. Data Cleaning
-- **Ambil data ekspresi dan metadata dari series matrix**
-  ```r
-  gse_data<-gse[[1]]
-  expression_data<-exprs(gse_data)
-  metadata<-pData(gse_data)
-  ```
-
-- **Cek struktur datanya**
-  ```r
-  dim(expression_data)
-  ```
-- **Melihat supplementary file yang sudah didownload** 
-  ```r
-  list.files("GSE294660/")
-  ```
-- **Baca isi file, dan simpan sebagai objek "counts". Sesuaikan nama file dengan output list.files tadi**
-  ```r
-  library(readr)
-  counts <- read.csv(
-    "GSE294660_dio_12WOD_urothelium_baseline_counts.csv",
-    row.names = 1,
-    check.names = FALSE
-  )
-  dim(counts)
-  head(counts)
-  ```
-
-#### Membuat metadata
-- **sederhanakan nama sampel8**
-  ```r
-  colnames(counts) <- c(
-    "F_LFD_1", "F_LFD_2", "F_LFD_3", "F_LFD_4",
-    "F_HFD_1", "F_HFD_2", "F_HFD_3", "F_HFD_4",
-    "M_LFD_1", "M_LFD_2", "M_LFD_3", "M_LFD_4",
-    "M_HFD_1", "M_HFD_2", "M_HFD_3", "M_HFD_4"
-  )
-  ```
--  **cek nama sampel**
-  ```r
-  colnames(counts)
-  ```
-
-- **membuat metadata**
-  ```r
-  metadata <- data.frame(
-    sample = colnames(counts),
-    sex = factor(c(rep("Female", 8),rep("Male", 8)
-    )),
-    condition = factor(c(rep("LFD", 4),rep("HFD", 4),rep("LFD", 4),rep("HFD", 4)
-    ))
-  )
-  ```
-- **Jadikan nama sampel sebagai row names**
-  ```r
-  rownames(metadata) <- metadata$sample
-  ```
-- **Tampilkan metadata**
-  ```r
-  metadata
-  ```
-- **Verifikasi dengan**
-  ```r
-  colnames(counts) == rownames(metadata)
-  semua harus TRUE
-  ```
-##### Distribusi Data
-- **Load library untuk visualisasi**
-  ```r
-  library(ggplot2)
-  library(tidyr)
-  library(dplyr)
-  ```
-- **ubah data ke format panjang (long format) untuk ggplot**
-  ```r
-  counts_long <- counts %>%
-    as.data.frame() %>%
-    mutate(gene = rownames(.)) %>%
-    pivot_longer(
-      cols = -gene,
-      names_to = "sample",
-      values_to = "count"
-    ) %>%
-    mutate(type = "Data Mentah")
-  ```
-- **Boxplot (dalam skala log2 agar lebih jelas)**
-  ```r
-  ggplot(counts_long, aes(x = sample, y = log2(count + 1), fill = sample)) +
-    geom_boxplot() +
-    theme_minimal() +
-    labs(
-      title = "Distribusi Ekspresi Gen per Sampel (Data Mentah)",
-      x = "Sampel",
-      y = "Log2(Count + 1)"
-    ) +
-    theme(
-      axis.text.x = element_text(angle = 45, hjust = 1)
-    )
-  ```
-##### a. Filter gen dengan reads rendah (opsional)
-- **Filter: gen dengan total reads >= 10 di semua sampel**
-  ```r
-  keep <- rowSums(counts) >= 10
-  counts_filtered <- counts[keep, ]
-  ```
-- **Bandingkan jumlah gen sebelum dan sesudah filter**
-  ```r
-  dim(counts)
-  dim(counts_filtered)
-  ```
-#### Korelasi antar sampel
-- **install dan load pheatmap (jika belum)**
-  ```r
-  if (!require("pheatmap", quietly = TRUE)) install.packages("pheatmap")
-  library(pheatmap)
-  ```
-- **Hitung korelasi antar sampel (pakai data yang sudah difilter)**
-  ```r
-  cor_matrix <- cor(counts_filtered)
-  ```
-- **Tampilkan sebagai heatmap**
-  ```r
-  pheatmap(cor_matrix,
-           main = "Korelasi Antar Sampel (Data Mentah)",
-           display_numbers = TRUE,
-           number_format = "%.2f",
-           color = colorRampPalette(c("blue", "white", "red"))(50))
-  ```
-#### PCA (Principal Component Analysis)
-- **PCA dengan data yang sudah di-log (karena data counts sangat skewed)**
-  ```r
-  log_data <- log2(counts_filtered + 1)
-  pca_results <- prcomp(t(log_data), scale. = TRUE)
-  ```
-- **Buat data frame untuk plotting**
-  ```r
-  pca_df <- data.frame(
-    PC1 = pca_results$x[,1],
-    PC2 = pca_results$x[,2],
-    condition = metadata$condition
-  )
-  ```
-- **Hitung persentase varians**
-  ```r
-  var_explained <- summary(pca_results)$importance[2, 1:2]*100
-  ```
-- **Plot PCA**
-  ```r
-  ggplot(pca_df, aes(x = PC1, y = PC2, color = condition)) +
-    geom_point(size = 5) +
-    theme_minimal() +
-    labs(title = "PCA Plot (Data Mentah - Log2)",
-         x = paste0("PC1: ", round(var_explained[1], 1), "% variance"),
-         y = paste0("PC2: ", round(var_explained[2], 1), "% variance")) +
-    theme(legend.position = "bottom")
-  ```
 
 ### 02 NORMALIZATION
 #### Normalisasi
