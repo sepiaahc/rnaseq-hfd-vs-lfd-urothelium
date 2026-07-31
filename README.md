@@ -66,11 +66,20 @@ Genes were considered **"significant"** when adjusted p-value (padj) < 0.05. Eac
 The following visualization were generated.
 ### a. Volcano Plot
 Displays significant upregulated and downregulated genes.
-(pict)
+
+<p align="center">
+  <img src="images/volcano_plot.png" width="700">
+</p>
+
+##### **Figure 1. Volcano plot of differentially expressed genes.**
 
 ### b. Heatmap
 Show expression pattern of the top 30 differentially expressed genes
-(pict)
+<p align="center">
+  <img src="images/heatmap.png" width="700">
+</p>
+
+##### **Figure 2. Heatmap of top 30 differentially expressed genes.**
 
 ### c. Top Differentially Expressed Genes
 - Top 10 Upregulated Genes
@@ -106,11 +115,14 @@ Show expression pattern of the top 30 differentially expressed genes
 ### Female vs Male Comparison
 Differentially expressed genes from female and male analyses were compared using Venn diagrams.
 
-(pict venn diagram)
+<p align="center">
+  <img src="images/venn_diagram.png" width="700">
+</p>
 
-Two comparisons were performed:
-- Upregulated genes
-- Downregulated genes
+##### **Figure 3. Venn diagram of differentially expressed genes.**
+- Female ∩ Male Upregulated = Fn1, Fn2, Fn3, Fn3.
+- Female ∩ Male Downregulated  = NA
+
 The overlapping genes represent transcriptomic responses shared between sexes.
 
 ## KEY FINDINGS
