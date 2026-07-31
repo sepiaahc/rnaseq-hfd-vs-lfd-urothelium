@@ -133,18 +133,12 @@ Differentially expressed genes from female and male analyses were compared using
 The overlapping genes represent transcriptomic responses shared between sexes.
 
 ## KEY FINDINGS
-Differentially expressed genes (DEGs) were identified using the criteria of adjusted p-value (padj) < 0.05 and |log2FoldChange| > 1.
+- Differentially expressed genes (DEGs) were identified using the criteria of adjusted p-value (padj) < 0.05 and |log2FoldChange| > 1.
+- FN1 (Fibronectin 1) was significantly upregulated in both female and male datasets, making it one of the most consistently dysregulated genes following High-Fat Diet (HFD) treatment. This consistency suggests that FN1 may represent a common molecular response to obesity-induced changes in the urothelium.
+- FN1 was also identified among the Top 10 Upregulated Genes, with a log2FoldChange of 2.51, indicating a robust increase in gene expression in the HFD group compared with the LFD group. This result highlights FN1 as one of the strongest transcriptional changes observed in this RNA-seq analysis.
+- FN1 encodes fibronectin, a major extracellular matrix (ECM) glycoprotein involved in cell adhesion, cell migration, tissue remodeling, wound healing, and extracellular matrix organization. Therefore, the increased expression of FN1 may reflect extracellular matrix remodeling and altered tissue homeostasis in response to HFD exposure.
+- The reproducible upregulation of FN1 across both sexes suggests that this gene could serve as a potential molecular biomarker associated with obesity-induced urothelial alterations. However, further validation through pathway enrichment analysis, independent datasets, and experimental studies is required to confirm its biological role.
 
-Female:
-- Upregulated genes: 184
-- Downregulated genes: 34
-
-Male:
-- Upregulated genes: 159
-- Downregulated genes: 70
-
-Venn analysis was performed separately for upregulated and downregulated genes to identify genes shared between female and male mice.
-Atau jika ingin lebih ringkas untuk README GitHub:
 
 ## Biological Interpretation
 Several highly expressed genes identified in this analysis have previously been associated with:
@@ -168,3 +162,4 @@ These findings suggest that HFD induces transcriptional changes potentially cont
 ## Reference
 - GEO Dataset GSE294660
 - Schwartz L, Salamon K, Simoni A, Cotzomi-Ortega I, Sanchez-Zamora Y, Linn-Peirano S, John P, de Dios Ruiz-Rosado J, Jackson AR, Wang X, Spencer JD. Obesity promotes urinary tract infection by disrupting bladder focal adhesion kinase signaling. iScience. 2025 Oct 25;28(11):113862. doi: 10.1016/j.isci.2025.113862. PMID: 41280678; PMCID: PMC12637249.
+- Castelletti F, Donadelli R, Banterla F, Hildebrandt F, Zipfel PF, Bresin E, Otto E, Skerka C, Renieri A, Todeschini M, Caprioli J, Caruso RM, Artuso R, Remuzzi G, Noris M. Mutations in FN1 cause glomerulopathy with fibronectin deposits. Proc Natl Acad Sci U S A. 2008 Feb 19;105(7):2538-43. doi: 10.1073/pnas.0707730105. Epub 2008 Feb 11. PMID: 18268355; PMCID: PMC2268172.
