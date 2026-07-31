@@ -27,6 +27,9 @@ The objective is to identify differentially expressed genes (DEGs) associated wi
 This project demonstrated the analysis using the **female dataset**, while the same workflow can be applied to the male samples for comparative analysis.
 
 ## Workflow (gambar)
+<p align="center">
+  <img src="images/workflow.png" width="700">
+</p>
 
 ## Analysis Pipeline
 ### 1. Data Preparation
